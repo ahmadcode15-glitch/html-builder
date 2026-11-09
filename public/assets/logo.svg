@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 50" width="240" height="50">
+  <defs>
+    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8A87F9"/>
+      <stop offset="100%" stop-color="#6E6AF6"/>
+    </linearGradient>
+  </defs>
+  <!-- Icon Mark -->
+  <rect x="4" y="5" width="40" height="40" rx="10" fill="#253763"/>
+  <rect x="11" y="12" width="26" height="26" rx="4" fill="#EDEFF5" stroke="#8A87F9" stroke-width="1.5"/>
+  <rect x="14" y="15" width="20" height="4" rx="1" fill="#8A87F9"/>
+  <rect x="14" y="22" width="7" height="13" rx="1" fill="#8A91A1"/>
+  <rect x="23" y="22" width="11" height="8" rx="1" fill="#253763"/>
+  <rect x="23" y="32" width="8" height="3" rx="1" fill="#8A87F9"/>
+
+  <!-- Brand Typography -->
+  <text x="54" y="28" font-family="'Outfit', sans-serif" font-size="20" font-weight="800" fill="#253763" letter-spacing="-0.02em">HTML<tspan fill="#8A87F9">DESIGNER</tspan></text>
+  <text x="55" y="41" font-family="'Plus Jakarta Sans', sans-serif" font-size="9" font-weight="700" fill="#8A91A1" letter-spacing="0.08em">VISUAL CANVAS STUDIO</text>
+</svg>

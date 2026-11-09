@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HTML Page Designer — Visual Web Canvas Studio</title>
+  <meta name="description" content="Professional Visual HTML Page Designer. Design visually, customize typography, styling and animations, edit HTML/CSS/JS source, and export standalone HTML or complete ZIP projects.">
+
+  <!-- Independent Dedicated Favicons -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" href="favicon.ico">
+
+  <!-- Google Fonts: Outfit (Headings) + Plus Jakarta Sans (Body) + Space Grotesk (Mono) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- JSZip for Complete Project ZIP Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
+  <!-- Studio Stylesheet (FusionTrail Palette) -->
+  <link rel="stylesheet" href="css/designer.css">
+</head>
+<body class="designer-body">
+
+  <!-- ========================================================================
+       1. TOP TOOLBAR
+       ======================================================================== -->
+  <header class="designer-topbar">
+    <div class="topbar-left">
+      <!-- Toggle Elements Sidebar Button -->
+      <button id="btnToggleLeftSidebar" class="tool-icon-btn" title="Toggle Elements Sidebar (Ctrl+B)">
+        <i class="fa-solid fa-shapes"></i>
+      </button>
+
+      <a href="/" class="brand-badge" title="HTML Builder">
+        <span class="brand-name">HTML Builder</span>
+      </a>
+
+      <div class="topbar-divider"></div>
+
+      <!-- Editable Document Title -->
+      <input type="text" id="docTitleInput" class="doc-title-input" value="Landing Page" title="Click to rename page" />
+
+      <!-- Save Status Pill -->
+      <span id="saveStatusIndicator" style="font-size: 11px; color: rgba(255, 255, 255, 0.7); display: flex; align-items: center; gap: 5px;">
+        <i class="fa-solid fa-cloud" style="color: var(--color-purple);"></i> Ready
+      </span>
+    </div>
+
+    <!-- Topbar Center: Viewport & History Controls -->
+    <div class="topbar-center">
+      <!-- Responsive Viewport Switcher -->
+      <div class="device-toggle-group">
+        <button class="device-btn active" data-device="desktop" title="Desktop View (1200px+)">
+          <i class="fa-solid fa-desktop"></i>
+          <span>Desktop</span>
+        </button>
+        <button class="device-btn" data-device="tablet" title="Tablet View (768px)">
+          <i class="fa-solid fa-tablet-screen-button"></i>
+          <span>Tablet</span>
+        </button>
+        <button class="device-btn" data-device="mobile" title="Mobile View (375px)">
+          <i class="fa-solid fa-mobile-screen"></i>
+          <span>Mobile</span>
+        </button>
+      </div>
+
+      <!-- Undo / Redo -->
+      <div class="icon-btn-group">
+        <button id="btnUndo" class="tool-icon-btn" title="Undo (Ctrl+Z)" disabled>
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+        <button id="btnRedo" class="tool-icon-btn" title="Redo (Ctrl+Y)" disabled>
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+
+      <!-- Zoom Dropdown -->
+      <div class="zoom-control">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <select id="canvasZoomSelect" class="zoom-select" title="Canvas Zoom">
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1" selected>100%</option>
+          <option value="1.25">125%</option>
+          <option value="1.5">150%</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Topbar Right: Actions & Exports -->
+    <div class="topbar-right">
+      <button id="btnNewPage" class="btn-studio btn-studio-ghost" title="Create Blank HTML Page">
+        <i class="fa-solid fa-file"></i>
+        <span>New</span>
+      </button>
+
+      <button id="btnOpenImport" class="btn-studio btn-studio-ghost" title="Upload or Paste HTML File" onclick="TechXImport.open()">
+        <i class="fa-solid fa-file-import"></i>
+        <span>Import</span>
+      </button>
+
+      <button id="btnOpenCodeEditor" class="btn-studio btn-studio-ghost" title="Open HTML/CSS/JS Source Code Editor" onclick="TechXCodeEditor.open()">
+        <i class="fa-solid fa-code"></i>
+        <span>Code</span>
+      </button>
+
+      <button id="btnTogglePreview" class="btn-studio btn-studio-ghost" title="Toggle Interactive Preview Mode">
+        <i class="fa-solid fa-eye"></i>
+        <span>Preview</span>
+      </button>
+
+      <button id="btnSaveProject" class="btn-studio btn-studio-ghost" title="Save Project Locally">
+        <i class="fa-solid fa-floppy-disk"></i>
+        <span>Save</span>
+      </button>
+
+      <div class="topbar-divider"></div>
+
+      <!-- Export Buttons -->
+      <button id="btnExportHtml" class="btn-studio btn-studio-primary" title="Download Standalone HTML File">
+        <i class="fa-solid fa-file-arrow-down"></i>
+        <span>Export HTML</span>
+      </button>
+
+      <button id="btnExportZip" class="btn-studio btn-studio-accent" title="Download Complete Project ZIP (HTML + CSS + JS + Assets)">
+        <i class="fa-solid fa-file-zipper"></i>
+        <span>Export ZIP</span>
+      </button>
+
+      <button id="btnOpenExportModal" class="tool-icon-btn" title="All Export Options">
+        <i class="fa-solid fa-ellipsis-vertical"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       2. MAIN STUDIO WORKSPACE
+       ======================================================================== -->
+  <div class="designer-workspace">
+
+    <!-- --------------------------------------------------------------------
+         LEFT SIDEBAR: ELEMENTS LIBRARY & LAYERS TREE
+         -------------------------------------------------------------------- -->
+    <aside class="designer-left-sidebar" id="designerLeftSidebar">
+      <div class="left-sidebar-header-mobile">
+        <div class="left-sidebar-mobile-title">
+          <i class="fa-solid fa-shapes"></i> <span>Library & Layers</span>
+        </div>
+        <button class="tool-icon-btn" id="btnCloseLeftSidebar" title="Close Elements Panel">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="left-nav-tabs">
+        <button class="left-nav-tab active" data-left-tab="elements">
+          <i class="fa-solid fa-shapes"></i> Elements
+        </button>
+        <button class="left-nav-tab" data-left-tab="layers">
+          <i class="fa-solid fa-layer-group"></i> Layers
+        </button>
+      </div>
+
+      <!-- Tab 1: Elements Library -->
+      <div class="left-sidebar-content" id="leftTabElements">
+        <!-- Search Input -->
+        <div class="element-search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="elementSearchInput" class="element-search-input" placeholder="Search elements..." />
+        </div>
+
+        <!-- 1. Category: Basic Elements -->
+        <div class="element-category">
+          <div class="category-title">
+            <span>Basic Elements</span>
+            <i class="fa-solid fa-font"></i>
+          </div>
+          <div class="elements-grid" id="basicElementsGrid"></div>
+        </div>
+
+        <!-- 2. Category: Layout Elements -->
+        <div class="element-category">
+          <div class="category-title">
+            <span>Layout & Containers</span>
+            <i class="fa-solid fa-table-cells-large"></i>
+          </div>
+          <div class="elements-grid" id="layoutElementsGrid"></div>
+        </div>
+
+        <!-- 3. Category: Content Elements -->
+        <div class="element-category">
+          <div class="category-title">
+            <span>Content Elements</span>
+            <i class="fa-solid fa-file-lines"></i>
+          </div>
+          <div class="elements-grid" id="contentElementsGrid"></div>
+        </div>
+
+        <!-- 4. Category: Form Elements -->
+        <div class="element-category">
+          <div class="category-title">
+            <span>Form Elements</span>
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div class="elements-grid" id="formElementsGrid"></div>
+        </div>
+
+        <!-- 5. Category: Advanced Elements -->
+        <div class="element-category">
+          <div class="category-title">
+            <span>Advanced Elements</span>
+            <i class="fa-solid fa-cubes"></i>
+          </div>
+          <div class="elements-grid" id="advancedElementsGrid"></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Layers Tree -->
+      <div class="left-sidebar-content" id="leftTabLayers" style="display: none;">
+        <div class="category-title">
+          <span>Document DOM Tree</span>
+          <button class="action-bar-btn" title="Refresh Tree" onclick="TechXLayers.refresh()">
+            <i class="fa-solid fa-rotate"></i>
+          </button>
+        </div>
+        <div class="layers-tree" id="layersTreeContainer"></div>
+      </div>
+    </aside>
+
+    <!-- Sidebar Backdrop for Mobile/Tablet Drawer -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- --------------------------------------------------------------------
+         CENTER CANVAS: LIVE DESIGN WORKSPACE
+         -------------------------------------------------------------------- -->
+    <main class="designer-canvas-area" id="canvasArea">
+      <!-- Dimensions Badge -->
+      <div class="canvas-dimension-badge" id="canvasDimensionBadge">
+        1200px × Responsive Desktop
+      </div>
+
+      <!-- Viewport Frame Wrapper -->
+      <div class="canvas-frame-container viewport-desktop" id="canvasFrame">
+        <!-- Drop Indicator Bar -->
+        <div class="designer-drop-indicator" id="dropIndicator"></div>
+
+        <!-- Live HTML Editable Canvas Body -->
+        <div class="canvas-body" id="canvasBody"></div>
+      </div>
+    </main>
+
+    <!-- --------------------------------------------------------------------
+         FLOATING EDITING PANEL: CONTEXTUAL PROPERTIES & STYLING
+         -------------------------------------------------------------------- -->
+    <aside class="designer-floating-panel designer-right-sidebar" id="floatingPropertiesPanel" aria-label="Element Properties Panel">
+      <!-- Mobile Bottom Sheet Pill -->
+      <div class="mobile-sheet-drag-pill" title="Drag to adjust height"></div>
+
+      <!-- Floating Panel Header (Drag handle, Title, Tag Badge, Pin & Close) -->
+      <div class="floating-panel-header" id="floatingPanelHeader">
+        <div class="floating-panel-title">
+          <i class="fa-solid fa-grip-vertical floating-drag-icon" title="Drag to reposition panel"></i>
+          <span class="floating-title-text">Properties</span>
+          <span class="floating-tag-badge" id="floatingTagBadge">DIV</span>
+        </div>
+        <div class="floating-panel-header-actions">
+          <button type="button" class="floating-header-btn" id="btnPinFloatingPanel" title="Pin panel position">
+            <i class="fa-solid fa-thumbtack"></i>
+          </button>
+          <button type="button" class="floating-header-btn" id="btnCloseFloatingPanel" title="Close panel (Esc)">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="right-nav-tabs">
+        <button class="right-nav-tab active" data-right-tab="style">
+          <i class="fa-solid fa-palette"></i> Style
+        </button>
+        <button class="right-nav-tab" data-right-tab="settings">
+          <i class="fa-solid fa-sliders"></i> Attrs
+        </button>
+        <button class="right-nav-tab" data-right-tab="animations">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Anims
+        </button>
+        <button class="right-nav-tab" data-right-tab="customcss">
+          <i class="fa-solid fa-code"></i> CSS
+        </button>
+      </div>
+
+      <!-- 1. STYLE TAB -->
+      <div class="right-sidebar-content" id="rightTab-style">
+        <form id="propertiesForm" onsubmit="return false;">
+
+          <!-- Sizing & Dimensions -->
+          <div class="prop-accordion">
+            <div class="prop-accordion-header">
+              <span><i class="fa-solid fa-up-right-and-down-left-from-center" style="margin-right: 6px; color: var(--color-purple);"></i> Dimensions</span>
+              <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="prop-accordion-body">
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Width</label>
+                  <div class="prop-input-wrap">
+                    <input type="text" id="propWidth" class="prop-input" placeholder="auto" />
+                    <span class="prop-unit-badge">px</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="prop-label">Height</label>
+                  <div class="prop-input-wrap">
+                    <input type="text" id="propHeight" class="prop-input" placeholder="auto" />
+                    <span class="prop-unit-badge">px</span>
+                  </div>
+                </div>
+              </div>
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Min W</label>
+                  <div class="prop-input-wrap">
+                    <input type="text" id="propMinWidth" class="prop-input" placeholder="0" />
+                    <span class="prop-unit-badge">px</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="prop-label">Max W</label>
+                  <div class="prop-input-wrap">
+                    <input type="text" id="propMaxWidth" class="prop-input" placeholder="none" />
+                    <span class="prop-unit-badge">px</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Spacing & Box Model -->
+          <div class="prop-accordion">
+            <div class="prop-accordion-header">
+              <span><i class="fa-solid fa-vector-square" style="margin-right: 6px; color: var(--color-purple);"></i> Box Model Spacing</span>
+              <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="prop-accordion-body">
+              <!-- Visual Box Model Diagram -->
+              <div class="box-model-container">
+                <div class="box-model-layer margin">
+                  <span class="box-model-label">Margin</span>
+                  <input type="text" id="boxMarginTop" class="box-input" placeholder="0" title="Margin Top" />
+                  <div style="display: flex; width: 100%; justify-content: space-between; align-items: center; margin: 4px 0;">
+                    <input type="text" id="boxMarginLeft" class="box-input" placeholder="0" title="Margin Left" />
+                    
+                    <div class="box-model-layer padding">
+                      <span class="box-model-label">Padding</span>
+                      <input type="text" id="boxPaddingTop" class="box-input" placeholder="0" title="Padding Top" />
+                      <div style="display: flex; width: 100%; justify-content: space-between; align-items: center; margin: 4px 0;">
+                        <input type="text" id="boxPaddingLeft" class="box-input" placeholder="0" title="Padding Left" />
+                        <div class="box-model-center">ELEMENT</div>
+                        <input type="text" id="boxPaddingRight" class="box-input" placeholder="0" title="Padding Right" />
+                      </div>
+                      <input type="text" id="boxPaddingBottom" class="box-input" placeholder="0" title="Padding Bottom" />
+                    </div>
+
+                    <input type="text" id="boxMarginRight" class="box-input" placeholder="0" title="Margin Right" />
+                  </div>
+                  <input type="text" id="boxMarginBottom" class="box-input" placeholder="0" title="Margin Bottom" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Typography -->
+          <div class="prop-accordion">
+            <div class="prop-accordion-header">
+              <span><i class="fa-solid fa-font" style="margin-right: 6px; color: var(--color-purple);"></i> Typography</span>
+              <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="prop-accordion-body">
+              <div>
+                <label class="prop-label">Font Family</label>
+                <select id="propFontFamily" class="prop-select">
+                  <option value="'Outfit', sans-serif">Outfit (Brand Heading)</option>
+                  <option value="'Plus Jakarta Sans', sans-serif">Plus Jakarta Sans (Body)</option>
+                  <option value="'Space Grotesk', monospace">Space Grotesk (Mono)</option>
+                  <option value="Arial, sans-serif">Arial</option>
+                  <option value="'Georgia', serif">Georgia</option>
+                  <option value="'Inter', sans-serif">Inter</option>
+                  <option value="'Roboto', sans-serif">Roboto</option>
+                </select>
+              </div>
+
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Size</label>
+                  <div class="prop-input-wrap">
+                    <input type="text" id="propFontSize" class="prop-input" placeholder="16" />
+                    <span class="prop-unit-badge">px</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="prop-label">Weight</label>
+                  <select id="propFontWeight" class="prop-select">
+                    <option value="300">300 Light</option>
+                    <option value="400">400 Regular</option>
+                    <option value="500">500 Medium</option>
+                    <option value="600">600 SemiBold</option>
+                    <option value="700">700 Bold</option>
+                    <option value="800">800 ExtraBold</option>
+                    <option value="900">900 Black</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Line Height</label>
+                  <input type="text" id="propLineHeight" class="prop-input" placeholder="1.5" />
+                </div>
+                <div>
+                  <label class="prop-label">Letter Space</label>
+                  <div class="prop-input-wrap">
+                    <input type="text" id="propLetterSpacing" class="prop-input" placeholder="0" />
+                    <span class="prop-unit-badge">px</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Text Alignment Buttons -->
+              <div>
+                <label class="prop-label" style="margin-bottom: 4px; display: block;">Alignment</label>
+                <div class="prop-btn-group">
+                  <button type="button" class="prop-seg-btn active" data-align-btn="left"><i class="fa-solid fa-align-left"></i></button>
+                  <button type="button" class="prop-seg-btn" data-align-btn="center"><i class="fa-solid fa-align-center"></i></button>
+                  <button type="button" class="prop-seg-btn" data-align-btn="right"><i class="fa-solid fa-align-right"></i></button>
+                  <button type="button" class="prop-seg-btn" data-align-btn="justify"><i class="fa-solid fa-align-justify"></i></button>
+                </div>
+              </div>
+
+              <!-- Text Color -->
+              <div>
+                <label class="prop-label">Text Color</label>
+                <div class="prop-color-picker-wrap">
+                  <div class="prop-color-preview" id="propTextColorPreview" style="background-color: #253763;">
+                    <input type="color" id="propTextColorNative" class="prop-color-input-native" value="#253763" />
+                  </div>
+                  <input type="text" id="propTextColor" class="prop-input" value="#253763" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Colors & Background -->
+          <div class="prop-accordion">
+            <div class="prop-accordion-header">
+              <span><i class="fa-solid fa-fill-drip" style="margin-right: 6px; color: var(--color-purple);"></i> Background & Colors</span>
+              <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="prop-accordion-body">
+              <div>
+                <label class="prop-label">Background Color</label>
+                <div class="prop-color-picker-wrap">
+                  <div class="prop-color-preview" id="propBgColorPreview" style="background-color: #FFFFFF;">
+                    <input type="color" id="propBgColorNative" class="prop-color-input-native" value="#FFFFFF" />
+                  </div>
+                  <input type="text" id="propBgColor" class="prop-input" value="#FFFFFF" />
+                </div>
+              </div>
+
+              <div>
+                <label class="prop-label">Background Image URL</label>
+                <input type="text" id="propBgImage" class="prop-input" placeholder="https://example.com/image.jpg" />
+              </div>
+
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Size</label>
+                  <select id="propBgSize" class="prop-select">
+                    <option value="cover">cover</option>
+                    <option value="contain">contain</option>
+                    <option value="auto">auto</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="prop-label">Repeat</label>
+                  <select id="propBgRepeat" class="prop-select">
+                    <option value="no-repeat">no-repeat</option>
+                    <option value="repeat">repeat</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Layout & Flexbox / Grid -->
+          <div class="prop-accordion">
+            <div class="prop-accordion-header">
+              <span><i class="fa-solid fa-table-columns" style="margin-right: 6px; color: var(--color-purple);"></i> Layout & Positioning</span>
+              <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="prop-accordion-body">
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Display</label>
+                  <select id="propDisplay" class="prop-select">
+                    <option value="block">block</option>
+                    <option value="flex">flex</option>
+                    <option value="grid">grid</option>
+                    <option value="inline-block">inline-block</option>
+                    <option value="inline">inline</option>
+                    <option value="none">none</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="prop-label">Position</label>
+                  <select id="propPosition" class="prop-select">
+                    <option value="static">static</option>
+                    <option value="relative">relative</option>
+                    <option value="absolute">absolute</option>
+                    <option value="fixed">fixed</option>
+                    <option value="sticky">sticky</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Flexbox Controls (conditional) -->
+              <div id="flexboxControlsGroup" style="display: none; padding: 10px; background: rgba(138, 135, 249, 0.08); border: 1px dashed var(--color-purple); border-radius: 6px;">
+                <div style="font-weight: 700; font-size: 11px; color: var(--color-deep-blue); margin-bottom: 8px;">FLEXBOX CONTROLS</div>
+                <div class="prop-grid-2" style="margin-bottom: 8px;">
+                  <div>
+                    <label class="prop-label">Direction</label>
+                    <select id="propFlexDirection" class="prop-select">
+                      <option value="row">row</option>
+                      <option value="column">column</option>
+                      <option value="row-reverse">row-reverse</option>
+                      <option value="column-reverse">column-reverse</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="prop-label">Justify</label>
+                    <select id="propJustifyContent" class="prop-select">
+                      <option value="flex-start">flex-start</option>
+                      <option value="center">center</option>
+                      <option value="flex-end">flex-end</option>
+                      <option value="space-between">space-between</option>
+                      <option value="space-around">space-around</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="prop-grid-2">
+                  <div>
+                    <label class="prop-label">Align</label>
+                    <select id="propAlignItems" class="prop-select">
+                      <option value="stretch">stretch</option>
+                      <option value="center">center</option>
+                      <option value="flex-start">flex-start</option>
+                      <option value="flex-end">flex-end</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="prop-label">Gap (px)</label>
+                    <input type="text" id="propFlexGap" class="prop-input" placeholder="10" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Grid Controls (conditional) -->
+              <div id="gridControlsGroup" style="display: none; padding: 10px; background: rgba(138, 135, 249, 0.08); border: 1px dashed var(--color-purple); border-radius: 6px;">
+                <div style="font-weight: 700; font-size: 11px; color: var(--color-deep-blue); margin-bottom: 8px;">CSS GRID CONTROLS</div>
+                <div style="margin-bottom: 8px;">
+                  <label class="prop-label">Grid Template Columns</label>
+                  <input type="text" id="propGridColumns" class="prop-input" placeholder="repeat(2, 1fr)" />
+                </div>
+                <div>
+                  <label class="prop-label">Grid Gap (px)</label>
+                  <input type="text" id="propGridGap" class="prop-input" placeholder="16" />
+                </div>
+              </div>
+
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Z-Index</label>
+                  <input type="text" id="propZIndex" class="prop-input" placeholder="auto" />
+                </div>
+                <div>
+                  <label class="prop-label">Overflow</label>
+                  <select id="propOverflow" class="prop-select">
+                    <option value="visible">visible</option>
+                    <option value="hidden">hidden</option>
+                    <option value="scroll">scroll</option>
+                    <option value="auto">auto</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Borders & Radius -->
+          <div class="prop-accordion">
+            <div class="prop-accordion-header">
+              <span><i class="fa-regular fa-square" style="margin-right: 6px; color: var(--color-purple);"></i> Borders & Radius</span>
+              <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="prop-accordion-body">
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Border Radius</label>
+                  <div class="prop-input-wrap">
+                    <input type="text" id="propBorderRadius" class="prop-input" placeholder="0" />
+                    <span class="prop-unit-badge">px</span>
+                  </div>
+                </div>
+                <div>
+                  <label class="prop-label">Border Width</label>
+                  <div class="prop-input-wrap">
+                    <input type="text" id="propBorderWidth" class="prop-input" placeholder="0" />
+                    <span class="prop-unit-badge">px</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="prop-grid-2">
+                <div>
+                  <label class="prop-label">Style</label>
+                  <select id="propBorderStyle" class="prop-select">
+                    <option value="none">none</option>
+                    <option value="solid">solid</option>
+                    <option value="dashed">dashed</option>
+                    <option value="dotted">dotted</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="prop-label">Border Color</label>
+                  <div class="prop-color-picker-wrap">
+                    <div class="prop-color-preview" id="propBorderColorPreview" style="background-color: #D8DCE6;">
+                      <input type="color" id="propBorderColorNative" class="prop-color-input-native" value="#D8DCE6" />
+                    </div>
+                    <input type="text" id="propBorderColor" class="prop-input" value="#D8DCE6" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shadows & Effects -->
+          <div class="prop-accordion">
+            <div class="prop-accordion-header">
+              <span><i class="fa-solid fa-sun" style="margin-right: 6px; color: var(--color-purple);"></i> Shadows & Effects</span>
+              <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="prop-accordion-body">
+              <div>
+                <label class="prop-label">Box Shadow</label>
+                <input type="text" id="propBoxShadow" class="prop-input" placeholder="0 10px 25px rgba(37, 55, 99, 0.1)" />
+              </div>
+
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                  <label class="prop-label">Opacity</label>
+                  <span id="propOpacityVal" style="font-size: 11px; font-weight: 700; color: var(--color-deep-blue);">100%</span>
+                </div>
+                <div class="prop-slider-wrap">
+                  <input type="range" id="propOpacity" class="prop-slider" min="0" max="1" step="0.05" value="1" />
+                </div>
+              </div>
+
+              <div>
+                <label class="prop-label">Transform (CSS)</label>
+                <input type="text" id="propTransform" class="prop-input" placeholder="rotate(0deg) scale(1)" />
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- 2. SETTINGS / ATTRIBUTES TAB -->
+      <div class="right-sidebar-content" id="rightTab-settings" style="display: none;">
+        <div class="prop-accordion">
+          <div class="prop-accordion-header">
+            <span><i class="fa-solid fa-tag" style="margin-right: 6px; color: var(--color-purple);"></i> Element Identity</span>
+          </div>
+          <div class="prop-accordion-body">
+            <div class="prop-row">
+              <label class="prop-label">HTML Tag</label>
+              <input type="text" id="propElemTag" class="prop-input" readonly style="opacity: 0.6; max-width: 140px;" />
+            </div>
+            <div class="prop-row">
+              <label class="prop-label">ID (#)</label>
+              <input type="text" id="propElemId" class="prop-input" placeholder="hero-section" style="max-width: 140px;" />
+            </div>
+            <div class="prop-row">
+              <label class="prop-label">Class (.)</label>
+              <input type="text" id="propElemClass" class="prop-input" placeholder="btn-primary custom-card" style="max-width: 140px;" />
+            </div>
+          </div>
+        </div>
+
+        <div class="prop-accordion">
+          <div class="prop-accordion-header">
+            <span><i class="fa-solid fa-wrench" style="margin-right: 6px; color: var(--color-purple);"></i> Tag Attributes</span>
+          </div>
+          <div class="prop-accordion-body" id="tagAttributesContainer">
+            <p style="color: var(--color-gray); font-size: 11.5px; margin: 0;">Select an element to configure attributes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ANIMATIONS TAB -->
+      <div class="right-sidebar-content" id="rightTab-animations" style="display: none;">
+        <div class="prop-accordion">
+          <div class="prop-accordion-header">
+            <span><i class="fa-solid fa-play" style="margin-right: 6px; color: var(--color-purple);"></i> Visual Animation Engine</span>
+          </div>
+          <div class="prop-accordion-body">
+            <div>
+              <label class="prop-label">Animation Preset</label>
+              <select id="animPresetSelect" class="prop-select">
+                <option value="none">None (No Animation)</option>
+                <option value="fadeIn">Fade In</option>
+                <option value="fadeInUp">Fade In Up</option>
+                <option value="fadeInDown">Fade In Down</option>
+                <option value="slideInLeft">Slide In Left</option>
+                <option value="slideInRight">Slide In Right</option>
+                <option value="zoomIn">Zoom In</option>
+                <option value="zoomOut">Zoom Out</option>
+                <option value="bounce">Bounce</option>
+                <option value="pulse">Pulse Scale</option>
+                <option value="rotate">Rotate 360°</option>
+                <option value="flipX">Flip Horizontal</option>
+              </select>
+            </div>
+
+            <div class="prop-grid-2">
+              <div>
+                <label class="prop-label">Duration (s)</label>
+                <input type="number" id="animDuration" class="prop-input" value="0.8" step="0.1" min="0.1" max="10" />
+              </div>
+              <div>
+                <label class="prop-label">Delay (s)</label>
+                <input type="number" id="animDelay" class="prop-input" value="0" step="0.1" min="0" max="10" />
+              </div>
+            </div>
+
+            <div class="prop-grid-2">
+              <div>
+                <label class="prop-label">Easing</label>
+                <select id="animTimingSelect" class="prop-select">
+                  <option value="ease">ease</option>
+                  <option value="linear">linear</option>
+                  <option value="ease-in">ease-in</option>
+                  <option value="ease-out">ease-out</option>
+                  <option value="cubic-bezier(0.16, 1, 0.3, 1)">smooth cubic</option>
+                </select>
+              </div>
+              <div>
+                <label class="prop-label">Iterations</label>
+                <select id="animIterSelect" class="prop-select">
+                  <option value="1">1 time</option>
+                  <option value="2">2 times</option>
+                  <option value="3">3 times</option>
+                  <option value="infinite">Infinite</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label class="prop-label">Trigger Event</label>
+              <select id="animTriggerSelect" class="prop-select">
+                <option value="load">On Page Load</option>
+                <option value="hover">On Hover</option>
+                <option value="scroll">On Scroll (In Viewport)</option>
+              </select>
+            </div>
+
+            <button type="button" id="btnPreviewAnimation" class="btn-studio btn-studio-primary" style="width: 100%; justify-content: center; margin-top: 6px;">
+              <i class="fa-solid fa-play"></i> Preview Animation Live
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. CUSTOM CSS TAB -->
+      <div class="right-sidebar-content" id="rightTab-customcss" style="display: none;">
+        <div class="prop-accordion">
+          <div class="prop-accordion-header">
+            <span><i class="fa-solid fa-code" style="margin-right: 6px; color: var(--color-purple);"></i> Element Custom Style</span>
+          </div>
+          <div class="prop-accordion-body">
+            <p style="font-size: 11.5px; color: var(--text-secondary); margin: 0;">
+              Edit inline CSS rules for this element directly:
+            </p>
+            <textarea id="propCustomCss" class="code-textarea" style="height: 220px; border: 1px solid var(--border-studio); border-radius: 6px;" placeholder="color: #253763; background: #FFF; ..."></textarea>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </div>
+
+  <!-- ========================================================================
+       3. MODALS (Code Editor, Import, Export)
+       ======================================================================== -->
+
+  <!-- CODE EDITOR MODAL -->
+  <div class="designer-modal-overlay" id="codeEditorModal">
+    <div class="designer-modal" style="max-width: 960px;">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-code"></i>
+          <h3>HTML, CSS & JavaScript Source Editor</h3>
+        </div>
+        <div class="code-editor-tabs">
+          <button class="code-tab-btn active" data-code-tab="html">HTML</button>
+          <button class="code-tab-btn" data-code-tab="css">CSS</button>
+          <button class="code-tab-btn" data-code-tab="js">JavaScript</button>
+        </div>
+        <button class="modal-close-btn" id="btnCloseCodeEditor">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Conflict Alert -->
+        <div id="codeConflictAlert" style="display: none; padding: 10px 14px; background: rgba(245, 158, 11, 0.12); border: 1px solid var(--accent-warning); border-radius: 6px; color: #9A6700; font-size: 12.5px; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>You have manual code edits. Click "Apply & Sync to Canvas" to update the visual canvas.</span>
+        </div>
+
+        <div class="code-editor-wrapper">
+          <textarea id="codeEditorHtml" class="code-textarea" spellcheck="false" placeholder="<!-- Edit HTML structure here -->"></textarea>
+          <textarea id="codeEditorCss" class="code-textarea" spellcheck="false" style="display: none;" placeholder="/* Edit custom CSS styles here */"></textarea>
+          <textarea id="codeEditorJs" class="code-textarea" spellcheck="false" style="display: none;" placeholder="// Edit custom JavaScript here"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btnFormatCode" class="btn-studio btn-studio-ghost" style="color: var(--color-deep-blue); border-color: var(--border-studio);">
+          <i class="fa-solid fa-wand-magic-sparkles"></i> Format Code
+        </button>
+        <button id="btnApplyCodeChanges" class="btn-studio btn-studio-primary">
+          <i class="fa-solid fa-check"></i> Apply & Sync to Canvas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- IMPORT HTML MODAL -->
+  <div class="designer-modal-overlay" id="importHtmlModal">
+    <div class="designer-modal">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-file-import"></i>
+          <h3>Import Existing HTML Page</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseImport">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- File Dropzone -->
+        <div id="importDropZone" style="border: 2px dashed var(--color-purple); border-radius: 10px; padding: 30px; text-align: center; background: rgba(138, 135, 249, 0.05); cursor: pointer;" onclick="document.getElementById('importFileInput').click()">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 32px; color: var(--color-purple); margin-bottom: 10px;"></i>
+          <h4 style="font-size: 15px; margin-bottom: 4px; color: var(--color-deep-blue);">Choose an HTML file or drag & drop here</h4>
+          <p style="font-size: 12.5px; color: var(--color-gray);">Supports .html and .htm files</p>
+          <input type="file" id="importFileInput" accept=".html,.htm" style="display: none;" />
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 10px; margin: 4px 0;">
+          <div style="flex: 1; height: 1px; background: var(--border-studio);"></div>
+          <span style="font-size: 11px; font-weight: 700; color: var(--color-gray); text-transform: uppercase;">or paste raw HTML code</span>
+          <div style="flex: 1; height: 1px; background: var(--border-studio);"></div>
+        </div>
+
+        <!-- Raw Paste Area -->
+        <textarea id="importPasteArea" class="code-textarea" style="height: 180px; border: 1px solid var(--border-studio); border-radius: 6px; background: #1A2234; color: #EDEFF5;" placeholder="<!DOCTYPE html><html><body><h1>Paste your HTML here...</h1></body></html>"></textarea>
+
+        <p style="font-size: 11.5px; color: var(--text-secondary); margin: 0;">
+          <i class="fa-solid fa-circle-info" style="color: var(--color-purple);"></i>
+          The designer will parse HTML elements, extract custom stylesheets and scripts, and load them onto the visual canvas.
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-studio btn-studio-ghost" style="color: var(--color-deep-blue); border-color: var(--border-studio);" onclick="TechXImport.close()">Cancel</button>
+        <button id="btnExecuteImport" class="btn-studio btn-studio-primary">
+          <i class="fa-solid fa-file-import"></i> Load into Canvas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORT OPTIONS MODAL -->
+  <div class="designer-modal-overlay" id="exportModal">
+    <div class="designer-modal" style="max-width: 800px;">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <i class="fa-solid fa-cloud-arrow-down"></i>
+          <h3>Export HTML Page</h3>
+        </div>
+        <button class="modal-close-btn" id="btnCloseExport">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- 3 Export Methods Overview -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 10px;">
+          <!-- Card 1: Standalone HTML -->
+          <div style="background: var(--color-light-gray); border: 1px solid var(--border-studio); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-file-code" style="color: var(--color-deep-blue); font-size: 20px;"></i>
+              <h4 style="font-size: 14px; font-weight: 700; color: var(--color-deep-blue);">Standalone HTML</h4>
+            </div>
+            <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.4; flex: 1;">
+              One single self-contained .html file containing all CSS, scripts, and keyframe animations.
+            </p>
+            <button id="btnModalDownloadHtml" class="btn-studio btn-studio-primary" style="width: 100%; justify-content: center;">
+              <i class="fa-solid fa-download"></i> Download HTML
+            </button>
+          </div>
+
+          <!-- Card 2: Complete Project ZIP -->
+          <div style="background: var(--color-light-gray); border: 1px solid var(--border-studio); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-file-zipper" style="color: var(--color-purple); font-size: 20px;"></i>
+              <h4 style="font-size: 14px; font-weight: 700; color: var(--color-deep-blue);">Complete ZIP</h4>
+            </div>
+            <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.4; flex: 1;">
+              Clean folder structure with index.html, css/style.css, js/script.js, assets/, and README.md.
+            </p>
+            <button id="btnModalDownloadZip" class="btn-studio btn-studio-primary" style="width: 100%; justify-content: center; background-color: var(--color-deep-blue);">
+              <i class="fa-solid fa-download"></i> Download ZIP
+            </button>
+          </div>
+
+          <!-- Card 3: Copy Code -->
+          <div style="background: var(--color-light-gray); border: 1px solid var(--border-studio); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <i class="fa-regular fa-copy" style="color: var(--color-deep-blue); font-size: 20px;"></i>
+              <h4 style="font-size: 14px; font-weight: 700; color: var(--color-deep-blue);">Copy Code</h4>
+            </div>
+            <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.4; flex: 1;">
+              Copy raw HTML, CSS, or JavaScript code directly to clipboard for quick paste.
+            </p>
+            <button class="btn-studio btn-studio-ghost" style="width: 100%; justify-content: center; color: var(--color-deep-blue); border-color: var(--border-studio);" onclick="document.getElementById('copySectionsGroup').scrollIntoView({ behavior: 'smooth' })">
+              <i class="fa-solid fa-chevron-down"></i> View Code
+            </button>
+          </div>
+        </div>
+
+        <!-- Copy Source Section -->
+        <div id="copySectionsGroup" style="display: flex; flex-direction: column; gap: 12px; border-top: 1px solid var(--border-studio); padding-top: 14px;">
+          <!-- HTML Copy Box -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 12px; font-weight: 700; color: var(--color-deep-blue);"><i class="fa-solid fa-code"></i> HTML Body Source</span>
+              <button id="btnCopyHtml" class="btn-studio btn-studio-ghost" style="padding: 4px 10px; font-size: 11px; color: var(--color-deep-blue); border-color: var(--border-studio);">
+                <i class="fa-regular fa-copy"></i> Copy HTML
+              </button>
+            </div>
+            <textarea id="copyHtmlArea" class="code-textarea" readonly style="height: 120px; border: 1px solid var(--border-studio); border-radius: 6px; background: #1A2234; color: #EDEFF5;"></textarea>
+          </div>
+
+          <!-- CSS Copy Box -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 12px; font-weight: 700; color: var(--color-deep-blue);"><i class="fa-brands fa-css3-alt"></i> CSS Stylesheet</span>
+              <button id="btnCopyCss" class="btn-studio btn-studio-ghost" style="padding: 4px 10px; font-size: 11px; color: var(--color-deep-blue); border-color: var(--border-studio);">
+                <i class="fa-regular fa-copy"></i> Copy CSS
+              </button>
+            </div>
+            <textarea id="copyCssArea" class="code-textarea" readonly style="height: 100px; border: 1px solid var(--border-studio); border-radius: 6px; background: #1A2234; color: #EDEFF5;"></textarea>
+          </div>
+
+          <!-- JS Copy Box -->
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 12px; font-weight: 700; color: var(--color-deep-blue);"><i class="fa-brands fa-js"></i> JavaScript</span>
+              <button id="btnCopyJs" class="btn-studio btn-studio-ghost" style="padding: 4px 10px; font-size: 11px; color: var(--color-deep-blue); border-color: var(--border-studio);">
+                <i class="fa-regular fa-copy"></i> Copy JS
+              </button>
+            </div>
+            <textarea id="copyJsArea" class="code-textarea" readonly style="height: 80px; border: 1px solid var(--border-studio); border-radius: 6px; background: #1A2234; color: #EDEFF5;"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-studio btn-studio-ghost" style="color: var(--color-deep-blue); border-color: var(--border-studio);" onclick="TechXExport.close()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. SCRIPTS
+       ======================================================================== -->
+  <script src="js/elements-library.js"></script>
+  <script src="js/designer-core.js"></script>
+  <script src="js/properties-panel.js"></script>
+  <script src="js/animation-engine.js"></script>
+  <script src="js/code-editor.js"></script>
+  <script src="js/import-parser.js"></script>
+  <script src="js/storage-manager.js"></script>
+  <script src="js/export-engine.js"></script>
+  <script src="js/ui-controller.js"></script>
+
+  <script>
+    // Initialize Studio Suite
+    document.addEventListener('DOMContentLoaded', () => {
+      TechXDesigner.init();
+      TechXProperties.init();
+      TechXAnimations.init();
+      TechXCodeEditor.init();
+      TechXImport.init();
+      TechXStorage.init();
+      TechXLayers.init();
+      TechXExport.init();
+      TechXDesignerUI.init();
+    });
+  </script>
+</body>
+</html>

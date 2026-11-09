@@ -1,0 +1,23 @@
+{
+  "name": "html-page-designer",
+  "version": "1.0.0",
+  "description": "Visual HTML Page Designer - Independent Web Canvas Studio",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node backend/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  },
+  "keywords": [
+    "html-editor",
+    "visual-designer",
+    "page-designer",
+    "canvas",
+    "drag-and-drop"
+  ],
+  "author": "Independent Software Project",
+  "license": "MIT"
+}
